@@ -4,7 +4,7 @@ var fs = require('fs');
 const config = {
     trade_against : ['BTC', 'ETH'],
     coins : ['ENJ', 'IOTA', 'STEEM', 'CDT'],
-    intervals : ["5m","1m"] // Optional intervals are "1h","30m","15m","5m","1m"
+    intervals : ["1m","5m"] // Optional intervals are "1h","30m","15m","5m","1m"
 
 };
 
@@ -115,9 +115,12 @@ async function main()
 
             while (EOF === false) {
 
-                let data = await rp.get("https://api.binance.com/api/v1/klines?symbol=" + pairs[i] + "&interval=" + intervals[k] + "&startTime=" + index_date).catch(err => {
-                        console.log(err);
-                    });
+                let data = await rp.get("https://api.binance.com/api/v1/klines?symbol=" + pairs[i] + "&interval=" + intervals[k] + "&startTime=" + index_date, {timeout: 1000}).catch(err => {
+                        console.log("timeout");
+                });
+
+                if (data === undefined)
+                    continue;
 
                 used_limit += 1;
 
