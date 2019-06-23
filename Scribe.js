@@ -139,7 +139,7 @@ async function main()
 
                 console.log(new Date(index_date).toISOString().slice(0, 19));
 
-                if (used_limit === 1200)
+                if (used_limit === limit)
                 {
 
                     let time_elapsed  = (new Date().getTime() - now);
