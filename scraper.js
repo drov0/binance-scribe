@@ -4,7 +4,7 @@ var fs = require('fs');
 const config = {
     trade_against : ['BTC', 'ETH'],
     coins : ['ENJ', 'IOTA', 'STEEM', 'CDT'],
-    intervals : ["1m","5m"] // Optional intervals are "1h","30m","15m","5m","1m"
+    intervals : ["5m","1m"] // Optional intervals are "1h","30m","15m","5m","1m"
 
 };
 
@@ -75,7 +75,7 @@ function wait(time)
 
 async function main()
 {
-    let now = new Date().getTime()/1000;
+    let now = new Date().getTime();
     const limit = await get_exchange_limit();
     let used_limit = 1; // 1 because we already did one request to get the limit;
     const pairs =  generate_pairs()
@@ -102,7 +102,7 @@ async function main()
 
             const filename = "./data/"+pairs[i]+"_"+intervals[k]+".json";
 
-            // If file exists, delete it TODO : continue previously started download
+            // If file exists, start from where it started
             if (fs.existsSync(filename)) {
                 fs.unlinkSync(filename);
             }
@@ -133,7 +133,7 @@ async function main()
                 // remove first and last []
                 data = data.substr(1, data.length - 2);
 
-                stream.write(data);
+                stream.write(data+ ",");
                 index_date = data_parsed[data_parsed.length - 1][0];
 
                 console.log(new Date(index_date).toISOString().slice(0, 19));
@@ -141,17 +141,17 @@ async function main()
                 if (used_limit === 1200)
                 {
 
-                    let time_elapsed  = (new Date().getTime()/1000 - now);
+                    let time_elapsed  = (new Date().getTime() - now);
 
                     if (time_elapsed < 60000)
                     {
                         console.log(`Limit reached, waiting ${70000 - time_elapsed} ms`);
                         // Wait in order for the limit to refresh.
-                        await wait(60000 - time_elapsed);
+                        await wait((60000 - time_elapsed)/1000);
                         // Wait 10 more seconds for good measure
-                        await wait(10000);
+                        await wait(10);
 
-                        now = new Date().getTime()/1000;
+                        now = new Date().getTime();
                         used_limit = 0;
                     }
 
