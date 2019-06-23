@@ -4,7 +4,9 @@ var fs = require('fs');
 const config = {
     trade_against : ['BTC', 'ETH'],
     coins : ['ENJ', 'IOTA', 'STEEM', 'CDT'],
-    intervals : ["5m","1m"] // Optional intervals are "1h","30m","15m","5m","1m"
+    intervals : ["5m","1m"], // Optional intervals are "1h","30m","15m","5m","1m"
+    // earliest possible is 1483292280000 aka first january 2017. I picked 1 january 2019 because I don't need data that's this old
+    start_date : 1546315199000
 
 };
 
@@ -83,8 +85,7 @@ async function main()
     const intervals = config.intervals;
 
 
-    // earliest possible is 1483292280000 aka first january 2017. I picked 1 january 2019 because I don't need that old data
-    const first_date = 1546315199000;
+    const first_date = config.start_date;
     let index_date = first_date;
 
     let data_parsed = [];
